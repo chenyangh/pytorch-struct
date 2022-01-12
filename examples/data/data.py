@@ -1,4 +1,4 @@
-import torchtext
+from torchtext.legacy import data
 import torch
 
 
@@ -52,7 +52,7 @@ def SubTokenizedField(tokenizer):
     """
     Field for use with pytorch-transformer
     """
-    FIELD = torchtext.data.RawField(
+    FIELD = data.RawField(
         preprocessing=lambda s: token_pre(tokenizer, s), postprocessing=token_post
     )
     FIELD.is_target = False
@@ -65,7 +65,7 @@ def TokenBucket(
     def batch_size_fn(x, _, size):
         return size + key(x)
 
-    return torchtext.data.BucketIterator(
+    return data.BucketIterator(
         train,
         train=True,
         sort=False,

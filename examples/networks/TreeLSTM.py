@@ -34,13 +34,16 @@ class TreeLSTMCell(nn.Module):
 
 def run(cell, graph, iou, h, c, topo=None):
     g = graph
-    g.register_message_func(cell.message_func)
-    g.register_reduce_func(cell.reduce_func)
-    g.register_apply_node_func(cell.apply_node_func)
-    # feed embedding
     g.ndata["iou"] = iou
     g.ndata["h"] = h
     g.ndata["c"] = c
+
+    g.update_all(cell.message_func, cell.reduce_func, cell.apply_node_func)
+    # g.register_message_func(cell.message_func)
+    # g.register_reduce_func(cell.reduce_func)
+    # g.register_apply_node_func(cell.apply_node_func)
+    # feed embedding
+
     # propagate
     dgl.prop_nodes_topo(g)
     if topo is None:

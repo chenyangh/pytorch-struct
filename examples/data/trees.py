@@ -1,4 +1,4 @@
-import torchtext.data as data
+from torchtext.legacy import data
 import torch
 
 
