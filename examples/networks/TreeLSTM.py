@@ -33,7 +33,7 @@ class TreeLSTMCell(nn.Module):
 
 
 def run(cell, graph, iou, h, c, topo=None):
-    g = graph
+    g = graph.to("cuda:0")
     g.ndata["iou"] = iou
     g.ndata["h"] = h
     g.ndata["c"] = c
@@ -45,11 +45,11 @@ def run(cell, graph, iou, h, c, topo=None):
     # feed embedding
 
     # propagate
-    dgl.prop_nodes_topo(g)
+    dgl.prop_nodes_topo(g, cell.message_func, cell.reduce_func)
     if topo is None:
-        dgl.prop_nodes_topo(g)
+        dgl.prop_nodes_topo(g, cell.message_func, cell.reduce_func)
     else:
-        g.prop_nodes(topo)
+        g.prop_nodes(topo, cell.message_func, cell.reduce_func)
 
     return g.ndata.pop("h")
 
